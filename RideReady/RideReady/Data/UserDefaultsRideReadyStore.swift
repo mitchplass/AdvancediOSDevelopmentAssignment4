@@ -51,13 +51,12 @@ final class UserDefaultsRideReadyStore: RideReadyStoring {
         encode(inspections, forKey: Key.inspections)
     }
 
-    func latestCompletedInspection() -> PreRideInspection? {
+    func completedInspections() -> [PreRideInspection] {
         inspections()
             .filter { $0.completedAt != nil }
             .sorted { lhs, rhs in
                 (lhs.completedAt ?? .distantPast) > (rhs.completedAt ?? .distantPast)
             }
-            .first
     }
 
     func streak() -> SafetyStreak {

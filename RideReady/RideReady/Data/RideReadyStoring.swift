@@ -10,7 +10,8 @@ protocol RideReadyStoring {
     func saveMotorcyclePhoto(_ data: Data?)
     func activeInspection() -> PreRideInspection?
     func save(_ inspection: PreRideInspection)
-    func latestCompletedInspection() -> PreRideInspection?
+    /// Finished walk-arounds, newest first.
+    func completedInspections() -> [PreRideInspection]
     func streak() -> SafetyStreak
     func save(_ streak: SafetyStreak)
 }

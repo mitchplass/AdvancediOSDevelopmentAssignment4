@@ -14,7 +14,7 @@ struct RideReadyApp: App {
 
     var body: some Scene {
         WindowGroup {
-            HomeView(store: store)
+            RootTabView(store: store)
         }
     }
 }

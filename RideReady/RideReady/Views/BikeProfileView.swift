@@ -3,11 +3,11 @@ import SwiftUI
 
 struct BikeProfileView: View {
     @StateObject private var viewModel: BikeProfileViewModel
-    @Binding var path: [RideReadyRoute]
+    @Binding var path: [BikeRoute]
     @State private var showingError = false
     @State private var pickerItem: PhotosPickerItem?
 
-    init(store: RideReadyStoring, path: Binding<[RideReadyRoute]>) {
+    init(store: RideReadyStoring, path: Binding<[BikeRoute]>) {
         _viewModel = StateObject(wrappedValue: BikeProfileViewModel(store: store))
         _path = path
     }
