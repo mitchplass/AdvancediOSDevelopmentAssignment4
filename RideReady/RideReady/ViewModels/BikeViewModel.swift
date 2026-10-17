@@ -48,7 +48,7 @@ final class BikeViewModel: ObservableObject {
 
         let completed = store.completedInspections()
         if let last = completed.first?.completedAt {
-            lastCheckText = "Last check: \(Self.checkTimeText(for: last, capitalized: false))"
+            lastCheckText = "Last check: \(DayTimeText.string(for: last, capitalized: false))"
         } else {
             lastCheckText = "No checks logged yet"
         }
@@ -131,36 +131,9 @@ final class BikeViewModel: ObservableObject {
 
         return RecentCheck(
             id: inspection.id,
-            dateText: checkTimeText(for: completedAt, capitalized: true),
+            dateText: DayTimeText.string(for: completedAt),
             resultText: resultText,
             isRideReady: isRideReady
         )
     }
-
-    /// "today, 11:19 pm", "yesterday, 7:40 am" or "Fri 16 Oct, 7:40 am".
-    private static func checkTimeText(for date: Date, capitalized: Bool) -> String {
-        let calendar = Calendar.current
-        let day: String
-        if calendar.isDateInToday(date) {
-            day = capitalized ? "Today" : "today"
-        } else if calendar.isDateInYesterday(date) {
-            day = capitalized ? "Yesterday" : "yesterday"
-        } else {
-            day = dayFormatter.string(from: date)
-        }
-        return "\(day), \(timeFormatter.string(from: date))"
-    }
-
-    private static let dayFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.setLocalizedDateFormatFromTemplate("EEEdMMM")
-        return formatter
-    }()
-
-    private static let timeFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .none
-        formatter.timeStyle = .short
-        return formatter
-    }()
 }

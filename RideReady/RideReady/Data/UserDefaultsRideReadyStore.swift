@@ -1,12 +1,15 @@
 import Foundation
 
-/// Saves the motorcycle, walk-arounds, and streak in UserDefaults as JSON.
+/// Saves the motorcycle, walk-arounds, streak, rides, and break reminder
+/// settings in UserDefaults as JSON.
 final class UserDefaultsRideReadyStore: RideReadyStoring {
     private enum Key {
         static let motorcycle = "rideReady.motorcycle"
         static let motorcyclePhoto = "rideReady.motorcyclePhoto"
         static let inspections = "rideReady.inspections"
         static let streak = "rideReady.streak"
+        static let rides = "rideReady.rides"
+        static let breakReminderSettings = "rideReady.breakReminderSettings"
     }
 
     private let defaults: UserDefaults
@@ -68,8 +71,42 @@ final class UserDefaultsRideReadyStore: RideReadyStoring {
         encode(streak, forKey: Key.streak)
     }
 
+    func activeRide() -> Ride? {
+        rides().first { $0.endedAt == nil }
+    }
+
+    func save(_ ride: Ride) {
+        var rides = rides()
+        if let index = rides.firstIndex(where: { $0.id == ride.id }) {
+            rides[index] = ride
+        } else {
+            rides.append(ride)
+        }
+        encode(rides, forKey: Key.rides)
+    }
+
+    func completedRides() -> [Ride] {
+        rides()
+            .filter { $0.endedAt != nil }
+            .sorted { lhs, rhs in
+                (lhs.endedAt ?? .distantPast) > (rhs.endedAt ?? .distantPast)
+            }
+    }
+
+    func breakReminderSettings() -> BreakReminderSettings {
+        decode(BreakReminderSettings.self, forKey: Key.breakReminderSettings) ?? .standard
+    }
+
+    func save(_ settings: BreakReminderSettings) {
+        encode(settings, forKey: Key.breakReminderSettings)
+    }
+
     private func inspections() -> [PreRideInspection] {
         decode([PreRideInspection].self, forKey: Key.inspections) ?? []
+    }
+
+    private func rides() -> [Ride] {
+        decode([Ride].self, forKey: Key.rides) ?? []
     }
 
     private func encode<T: Encodable>(_ value: T, forKey key: String) {

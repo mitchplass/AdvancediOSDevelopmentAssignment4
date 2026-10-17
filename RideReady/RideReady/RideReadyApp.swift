@@ -2,19 +2,15 @@ import SwiftUI
 
 @main
 struct RideReadyApp: App {
-    private let store: RideReadyStoring
-
-    init() {
-        let store = UserDefaultsRideReadyStore()
-        if store.motorcycle() == nil {
-            store.save(.yamahaMT07())
-        }
-        self.store = store
-    }
+    @UIApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
 
     var body: some Scene {
         WindowGroup {
-            RootTabView(store: store)
+            RootTabView(
+                store: appDelegate.store,
+                scheduler: appDelegate.scheduler,
+                router: appDelegate.router
+            )
         }
     }
 }
