@@ -9,7 +9,8 @@ struct RideReadyApp: App {
             RootTabView(
                 store: appDelegate.store,
                 scheduler: appDelegate.scheduler,
-                router: appDelegate.router
+                router: appDelegate.router,
+                appearance: appDelegate.appearance
             )
         }
     }

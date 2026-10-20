@@ -5,6 +5,7 @@ struct RootTabView: View {
     let store: RideReadyStoring
     let scheduler: NotificationScheduling
     @ObservedObject var router: AppRouter
+    @ObservedObject var appearance: AppearanceSettings
 
     var body: some View {
         TabView(selection: $router.selectedTab) {
@@ -16,7 +17,10 @@ struct RootTabView: View {
             }
             Tab("Lap Timer", systemImage: "stopwatch", value: AppTab.lapTimer) {
                 LapTimerView(store: store, onExit: { router.selectedTab = .bike })
+            Tab("Appearance", systemImage: "circle.lefthalf.filled", value: AppTab.appearance) {
+                AppearanceView(settings: appearance)
             }
         }
+        .preferredColorScheme(appearance.mode.colorScheme)
     }
 }
