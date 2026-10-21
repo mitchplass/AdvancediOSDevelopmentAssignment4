@@ -6,6 +6,7 @@ struct BikeProfileView: View {
     @Binding var path: [BikeRoute]
     @State private var showingError = false
     @State private var pickerItem: PhotosPickerItem?
+    @FocusState private var nameIsFocused: Bool
 
     init(store: RideReadyStoring, path: Binding<[BikeRoute]>) {
         _viewModel = StateObject(wrappedValue: BikeProfileViewModel(store: store))
@@ -20,6 +21,8 @@ struct BikeProfileView: View {
                         BikePhotoView(data: viewModel.photoData, height: 180)
                     }
                     .buttonStyle(.plain)
+                    .accessibilityLabel(viewModel.photoData == nil ? "Add a bike photo" : "Change bike photo")
+                    .accessibilityHint("Opens the photo picker")
                     .onChange(of: pickerItem) { _, item in
                         Task {
                             guard let item,
@@ -36,6 +39,7 @@ struct BikeProfileView: View {
                             pickerItem = nil
                         }
                         .font(.subheadline)
+                        .frame(minHeight: 44)
                     } else {
                         Text("Tap the photo to add a picture of your bike.")
                             .font(.footnote)
@@ -47,6 +51,12 @@ struct BikeProfileView: View {
                         .foregroundStyle(.secondary)
                     TextField("Yamaha MT-07", text: $viewModel.name)
                         .textFieldStyle(.roundedBorder)
+                        .font(.body)
+                        .textInputAutocapitalization(.words)
+                        .submitLabel(.done)
+                        .focused($nameIsFocused)
+                        .onSubmit { nameIsFocused = false }
+                        .accessibilityLabel("Bike name")
 
                     Text("Final drive")
                         .font(.subheadline)
@@ -111,6 +121,12 @@ struct BikeProfileView: View {
         .padding(24)
         .navigationTitle("Bike profile")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItemGroup(placement: .keyboard) {
+                Spacer()
+                Button("Done") { nameIsFocused = false }
+            }
+        }
         .alert("Can't save this bike", isPresented: $showingError, actions: {
             Button("OK", role: .cancel) {}
         }, message: {

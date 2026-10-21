@@ -1,7 +1,7 @@
 import Combine
+import os
 import UIKit
 import UserNotifications
-import os
 
 /// The tabs in the root tab bar.
 enum AppTab: Hashable {
@@ -35,10 +35,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCent
     private static let logger = Logger(subsystem: "com.iosdev.RideReady", category: "notifications")
 
     override init() {
-        let store = UserDefaultsRideReadyStore()
-        if store.motorcycle() == nil {
-            store.save(.yamahaMT07())
-        }
+        let store = Self.makeStore()
         self.store = store
         do {
             journal = try SwiftDataRideJournalRepository()
@@ -100,5 +97,24 @@ final class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCent
         } catch {
             Self.logger.error("Couldn't reschedule break reminders: \(error.localizedDescription, privacy: .public)")
         }
+    }
+
+    private static func makeStore() -> RideReadyStoring {
+        let store: RideReadyStoring
+        do {
+            let swiftData = try SwiftDataRideReadyStore()
+            swiftData.migrateFromUserDefaultsIfNeeded()
+            store = swiftData
+        } catch {
+            Self.logger.error("SwiftData is unavailable, using the on-device backup store: \(error.localizedDescription, privacy: .public)")
+            store = UserDefaultsRideReadyStore()
+        }
+
+        if store.motorcycle() == nil,
+           !UserDefaults.standard.bool(forKey: RideReadyStorageKey.suppressSampleMotorcycle) {
+            store.save(.yamahaMT07())
+        }
+        RideReadyWidgetPublisher.publish(from: store)
+        return store
     }
 }

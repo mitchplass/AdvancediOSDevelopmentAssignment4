@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		E4674C893053849900C3C94E /* RideReadyWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = E4674C803053849900C3C94E /* RideReadyWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		E4674C703053849900C3C94E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -14,12 +18,44 @@
 			remoteGlobalIDString = E4674C4C3053849800C3C94E;
 			remoteInfo = RideReady;
 		};
+		E4674C863053849900C3C94E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E4674C453053849800C3C94E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E4674C823053849900C3C94E;
+			remoteInfo = RideReadyWidget;
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		E4674C883053849900C3C94E /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				E4674C893053849900C3C94E /* RideReadyWidget.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		E4674C4D3053849800C3C94E /* RideReady.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RideReady.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E4674C6A3053849900C3C94E /* RideReadyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RideReadyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		E4674C803053849900C3C94E /* RideReadyWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = RideReadyWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		E4674C8D3053849900C3C94E /* Exceptions for "RideReadyWidget" folder in "RideReadyWidget" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = E4674C823053849900C3C94E /* RideReadyWidget */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		E4674C4F3053849800C3C94E /* RideReady */ = {
@@ -30,6 +66,14 @@
 		E4674C6B3053849900C3C94E /* RideReadyTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = RideReadyTests;
+			sourceTree = "<group>";
+		};
+		E4674C813053849900C3C94E /* RideReadyWidget */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				E4674C8D3053849900C3C94E /* Exceptions for "RideReadyWidget" folder in "RideReadyWidget" target */,
+			);
+			path = RideReadyWidget;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -49,6 +93,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		E4674C843053849900C3C94E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -56,6 +107,7 @@
 			isa = PBXGroup;
 			children = (
 				E4674C4F3053849800C3C94E /* RideReady */,
+				E4674C813053849900C3C94E /* RideReadyWidget */,
 				E4674C6B3053849900C3C94E /* RideReadyTests */,
 				E4674C4E3053849800C3C94E /* Products */,
 			);
@@ -65,6 +117,7 @@
 			isa = PBXGroup;
 			children = (
 				E4674C4D3053849800C3C94E /* RideReady.app */,
+				E4674C803053849900C3C94E /* RideReadyWidget.appex */,
 				E4674C6A3053849900C3C94E /* RideReadyTests.xctest */,
 			);
 			name = Products;
@@ -80,10 +133,12 @@
 				E4674C493053849800C3C94E /* Sources */,
 				E4674C4A3053849800C3C94E /* Frameworks */,
 				E4674C4B3053849800C3C94E /* Resources */,
+				E4674C883053849900C3C94E /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				E4674C873053849900C3C94E /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				E4674C4F3053849800C3C94E /* RideReady */,
@@ -118,6 +173,28 @@
 			productReference = E4674C6A3053849900C3C94E /* RideReadyTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		E4674C823053849900C3C94E /* RideReadyWidget */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E4674C8C3053849900C3C94E /* Build configuration list for PBXNativeTarget "RideReadyWidget" */;
+			buildPhases = (
+				E4674C833053849900C3C94E /* Sources */,
+				E4674C843053849900C3C94E /* Frameworks */,
+				E4674C853053849900C3C94E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				E4674C813053849900C3C94E /* RideReadyWidget */,
+			);
+			name = RideReadyWidget;
+			packageProductDependencies = (
+			);
+			productName = RideReadyWidget;
+			productReference = E4674C803053849900C3C94E /* RideReadyWidget.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -134,6 +211,9 @@
 					E4674C6F3053849900C3C94E = {
 						CreatedOnToolsVersion = 26.3;
 						TestTargetID = E4674C4C3053849800C3C94E;
+					};
+					E4674C823053849900C3C94E = {
+						CreatedOnToolsVersion = 26.3;
 					};
 				};
 			};
@@ -152,6 +232,7 @@
 			projectRoot = "";
 			targets = (
 				E4674C4C3053849800C3C94E /* RideReady */,
+				E4674C823053849900C3C94E /* RideReadyWidget */,
 				E4674C6F3053849900C3C94E /* RideReadyTests */,
 			);
 		};
@@ -166,6 +247,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		E4674C6E3053849900C3C94E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E4674C853053849900C3C94E /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -189,6 +277,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		E4674C833053849900C3C94E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -196,6 +291,11 @@
 			isa = PBXTargetDependency;
 			target = E4674C4C3053849800C3C94E /* RideReady */;
 			targetProxy = E4674C703053849900C3C94E /* PBXContainerItemProxy */;
+		};
+		E4674C873053849900C3C94E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E4674C823053849900C3C94E /* RideReadyWidget */;
+			targetProxy = E4674C863053849900C3C94E /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -326,11 +426,15 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Config/RideReady.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 4V28M9347U;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = RideReady;
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -357,11 +461,15 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Config/RideReady.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 4V28M9347U;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = RideReady;
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -427,6 +535,66 @@
 			};
 			name = Release;
 		};
+		E4674C8A3053849900C3C94E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_ENTITLEMENTS = Config/RideReadyWidget.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 4V28M9347U;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = RideReadyWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = RideReady;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.iosdev.RideReady.widget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		E4674C8B3053849900C3C94E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_ENTITLEMENTS = Config/RideReadyWidget.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 4V28M9347U;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = RideReadyWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = RideReady;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.iosdev.RideReady.widget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -453,6 +621,15 @@
 			buildConfigurations = (
 				E4674C723053849900C3C94E /* Debug */,
 				E4674C733053849900C3C94E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E4674C8C3053849900C3C94E /* Build configuration list for PBXNativeTarget "RideReadyWidget" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E4674C8A3053849900C3C94E /* Debug */,
+				E4674C8B3053849900C3C94E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

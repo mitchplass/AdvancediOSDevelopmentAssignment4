@@ -91,7 +91,7 @@ struct ChecklistView: View {
                 .buttonStyle(.borderedProminent)
                 .controlSize(.large)
             } else {
-                // Placeholder where the log button appears; VoiceOver reads the remaining count above instead.
+                // Holds the space until every item has an answer. VoiceOver reads the remaining count above.
                 Text(viewModel.logButtonTitle)
                     .font(.body.weight(.semibold))
                     .foregroundStyle(.secondary)
