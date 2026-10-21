@@ -53,7 +53,7 @@ final class BikeViewModel: ObservableObject {
             lastCheckText = "No checks logged yet"
         }
         recentChecks = completed.prefix(Self.recentCheckLimit).compactMap(Self.recentCheck(for:))
-        updateRideReadyStatus(latest: completed.first)
+        updateRideReadyStatus()
         startButtonTitle = store.activeInspection() == nil
             ? "Start pre-ride check"
             : "Continue pre-ride check"
@@ -74,7 +74,7 @@ final class BikeViewModel: ObservableObject {
         }
     }
 
-    private func updateRideReadyStatus(latest: PreRideInspection?) {
+    private func updateRideReadyStatus() {
         if store.activeInspection() != nil {
             isRideReady = false
             rideReadyTitle = "Not ride ready"
@@ -82,10 +82,8 @@ final class BikeViewModel: ObservableObject {
             return
         }
 
-        if let latest,
-           latest.readiness == .readyToRide,
-           let completedAt = latest.completedAt,
-           Calendar.current.isDateInToday(completedAt) {
+        let snapshot = BuildWidgetSnapshotUseCase(store: store).execute()
+        if snapshot.status(at: Date()) == .checked {
             isRideReady = true
             rideReadyTitle = "Ride ready"
             rideReadyDetail = "All checks passed. You're ride ready."
@@ -94,7 +92,7 @@ final class BikeViewModel: ObservableObject {
 
         isRideReady = false
         rideReadyTitle = "Not ride ready"
-        if latest?.readiness == .notRideReady {
+        if snapshot.needsAttention {
             rideReadyDetail = "Last walk-around found something that needs attention."
         } else {
             rideReadyDetail = "Do a pre-ride check before you leave."

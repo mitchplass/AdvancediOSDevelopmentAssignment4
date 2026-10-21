@@ -22,7 +22,7 @@ enum FinalDrive: String, Codable, CaseIterable {
 /// Business Rule: the checklist must match `finalDrive` so chain riders are
 /// asked about the chain and shaft riders are not. Chain bikes also store the
 /// slack range the rider should check against.
-struct Motorcycle: Codable {
+struct Motorcycle: Codable, Equatable {
     var name: String
     var finalDrive: FinalDrive
     var frontTyrePressurePSI: Int

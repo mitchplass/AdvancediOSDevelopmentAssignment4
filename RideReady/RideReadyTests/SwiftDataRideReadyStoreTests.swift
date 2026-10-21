@@ -155,25 +155,15 @@ final class SwiftDataRideReadyStoreTests: XCTestCase {
     func test_widgetSnapshot_isRideReadyOnlyForTodaysPassingCheck() {
         let bike = Motorcycle.yamahaMT07()
         store.save(bike)
-        var snapshot = RideReadyWidgetPublisher.snapshot(from: store)
-        XCTAssertFalse(snapshot.isRideReady)
-
         let now = Date()
-        store.save(makeInspection(bike: bike, completedAt: now, ready: true))
-        snapshot = RideReadyWidgetPublisher.snapshot(from: store, now: now)
-        XCTAssertTrue(snapshot.isRideReady)
-        XCTAssertEqual(snapshot.bikeName, bike.name)
-        XCTAssertEqual(snapshot.ridePhase, "Not riding")
+        var snapshot = BuildWidgetSnapshotUseCase(store: store).execute()
+        XCTAssertEqual(snapshot.status(at: now), .notChecked)
+        XCTAssertEqual(snapshot.motorcycleName, bike.name)
 
-        store.save(Ride(
-            id: UUID(),
-            startedAt: now,
-            endedAt: nil,
-            stops: [RideStop(startedAt: now, endedAt: nil)],
-            remindAgainAt: nil
-        ))
-        snapshot = RideReadyWidgetPublisher.snapshot(from: store, now: now)
-        XCTAssertEqual(snapshot.ridePhase, "On a break")
+        store.save(makeInspection(bike: bike, completedAt: now, ready: true))
+        snapshot = BuildWidgetSnapshotUseCase(store: store).execute()
+        XCTAssertEqual(snapshot.status(at: now), .checked)
+        XCTAssertTrue(snapshot.lastCheckPassed)
     }
 
     private func makeInspection(bike: Motorcycle, completed: Bool, ready: Bool) -> PreRideInspection {

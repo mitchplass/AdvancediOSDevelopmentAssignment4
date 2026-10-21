@@ -327,7 +327,6 @@ final class SwiftDataRideReadyStore: RideReadyStoring {
                 try body(context)
                 try context.save()
             }
-            RideReadyWidgetPublisher.publish(from: self)
         } catch {
             Self.logger.error("Save failed: \(error.localizedDescription, privacy: .public)")
         }

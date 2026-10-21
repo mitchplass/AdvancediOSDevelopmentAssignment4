@@ -21,20 +21,6 @@
                ReferencedContainer = "container:RideReady.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "E4674C823053849900C3C94E"
-               BuildableName = "RideReadyWidget.appex"
-               BlueprintName = "RideReadyWidget"
-               ReferencedContainer = "container:RideReady.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction

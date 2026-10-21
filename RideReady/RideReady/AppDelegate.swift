@@ -17,6 +17,8 @@ enum AppTab: Hashable {
 final class AppRouter: ObservableObject {
     @Published var selectedTab: AppTab = .bike
     @Published private(set) var rideChangeCount = 0
+    @Published var bikePath: [BikeRoute] = []
+    @Published var widgetError: String?
 
     func rideChangedElsewhere() {
         rideChangeCount += 1
@@ -26,7 +28,7 @@ final class AppRouter: ObservableObject {
 /// Owns the app's store, ride journal, and notification scheduler, registers
 /// notification categories, and handles break reminder actions and taps.
 final class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDelegate {
-    let store: RideReadyStoring
+    let store: WidgetPublishingRideReadyStore
     let journal: RideJournalRepository
     let scheduler: NotificationScheduling
     let router = AppRouter()
@@ -35,18 +37,18 @@ final class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCent
     private static let logger = Logger(subsystem: "com.iosdev.RideReady", category: "notifications")
 
     override init() {
-        let store = Self.makeStore()
+        let store = WidgetPublishingRideReadyStore(base: Self.makeStore())
         self.store = store
         do {
             journal = try SwiftDataRideJournalRepository()
         } catch {
             // Keep riding working; this session's journal just isn't saved to disk.
             Self.logger.error("Couldn't open the ride journal: \(error.localizedDescription, privacy: .public)")
-            // An in-memory store has no file to fail on.
             journal = try! SwiftDataRideJournalRepository(inMemory: true)
         }
         scheduler = UserNotificationScheduler()
         super.init()
+        self.store.refreshWidget()
     }
 
     func application(
@@ -114,7 +116,6 @@ final class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCent
            !UserDefaults.standard.bool(forKey: RideReadyStorageKey.suppressSampleMotorcycle) {
             store.save(.yamahaMT07())
         }
-        RideReadyWidgetPublisher.publish(from: store)
         return store
     }
 }

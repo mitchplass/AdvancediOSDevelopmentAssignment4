@@ -28,7 +28,6 @@ final class UserDefaultsRideReadyStore: RideReadyStoring {
 
     func save(_ motorcycle: Motorcycle) {
         encode(motorcycle, forKey: Key.motorcycle)
-        noteChange()
     }
 
     func motorcyclePhoto() -> Data? {
@@ -41,7 +40,6 @@ final class UserDefaultsRideReadyStore: RideReadyStoring {
         } else {
             defaults.removeObject(forKey: Key.motorcyclePhoto)
         }
-        noteChange()
     }
 
     func activeInspection() -> PreRideInspection? {
@@ -56,7 +54,6 @@ final class UserDefaultsRideReadyStore: RideReadyStoring {
             inspections.append(inspection)
         }
         encode(inspections, forKey: Key.inspections)
-        noteChange()
     }
 
     func completedInspections() -> [PreRideInspection] {
@@ -74,7 +71,6 @@ final class UserDefaultsRideReadyStore: RideReadyStoring {
 
     func save(_ streak: SafetyStreak) {
         encode(streak, forKey: Key.streak)
-        noteChange()
     }
 
     func activeRide() -> Ride? {
@@ -89,7 +85,6 @@ final class UserDefaultsRideReadyStore: RideReadyStoring {
             rides.append(ride)
         }
         encode(rides, forKey: Key.rides)
-        noteChange()
     }
 
     func completedRides() -> [Ride] {
@@ -106,7 +101,6 @@ final class UserDefaultsRideReadyStore: RideReadyStoring {
 
     func save(_ settings: BreakReminderSettings) {
         encode(settings, forKey: Key.breakReminderSettings)
-        noteChange()
     }
 
     func eraseAll() {
@@ -118,7 +112,6 @@ final class UserDefaultsRideReadyStore: RideReadyStoring {
         defaults.removeObject(forKey: Key.breakReminderSettings)
         defaults.removeObject(forKey: Key.tracks)
         defaults.removeObject(forKey: Key.sessions)
-        noteChange()
     }
 
     func tracks() -> [Track] {
@@ -143,10 +136,6 @@ final class UserDefaultsRideReadyStore: RideReadyStoring {
 
     private func rides() -> [Ride] {
         decode([Ride].self, forKey: Key.rides) ?? []
-    }
-
-    private func noteChange() {
-        RideReadyWidgetPublisher.publish(from: self)
     }
 
     private func encode<T: Encodable>(_ value: T, forKey key: String) {
