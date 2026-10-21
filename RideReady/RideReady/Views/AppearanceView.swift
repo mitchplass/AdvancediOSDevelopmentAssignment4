@@ -93,7 +93,7 @@ struct AppearanceView: View {
             Link(RideReadySupport.email, destination: RideReadySupport.mailURL)
                 .font(.body.weight(.semibold))
                 .frame(minHeight: 44)
-            Text("Add the RideReady widget to the Home Screen or Lock Screen to see if you are ride ready.")
+            Text("Add the RideReady widget to the Home Screen to see if you are ride ready.")
                 .font(.footnote)
                 .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
