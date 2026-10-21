@@ -28,6 +28,8 @@ protocol RideReadyStoring {
     /// Lap timer sessions, each with its lap times.
     func sessions() -> [Session]
     func saveSessions(_ sessions: [Session])
+    /// Deletes the motorcycle, photo, walk-arounds, streak, rides, reminder settings, tracks, and sessions.
+    func eraseAll()
 }
 
 // MARK: - Lap timer stores

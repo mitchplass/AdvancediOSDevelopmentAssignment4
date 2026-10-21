@@ -24,5 +24,6 @@ struct BikePhotoView: View {
         .frame(height: height)
         .clipped()
         .clipShape(RoundedRectangle(cornerRadius: 12))
+        .accessibilityLabel(data == nil ? "No bike photo" : "Bike photo")
     }
 }

@@ -67,12 +67,14 @@ struct BikeView: View {
             HStack(alignment: .firstTextBaseline) {
                 Text(viewModel.motorcycleName)
                     .font(.title3.bold())
+                    .fixedSize(horizontal: false, vertical: true)
                 Spacer(minLength: 12)
                 Button(viewModel.editButtonTitle) {
                     path.append(.bikeProfile)
                 }
                 .font(.body.weight(.semibold))
                 .frame(minWidth: 44, minHeight: 44)
+                .accessibilityLabel("\(viewModel.editButtonTitle) bike profile")
             }
             ForEach(viewModel.specLines, id: \.self) { line in
                 Text(line)
@@ -94,12 +96,14 @@ struct BikeView: View {
                 Image(systemName: viewModel.isRideReady ? "checkmark.circle.fill" : "exclamationmark.triangle.fill")
                     .font(.title2)
                     .foregroundStyle(tint)
+                    .accessibilityHidden(true)
                 VStack(alignment: .leading, spacing: 4) {
                     Text(viewModel.rideReadyTitle)
                         .font(.headline)
                     Text(viewModel.rideReadyDetail)
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
             }
             Divider()

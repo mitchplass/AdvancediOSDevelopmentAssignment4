@@ -58,4 +58,9 @@ final class WidgetPublishingRideReadyStore: RideReadyStoring {
     func saveMotorcyclePhoto(_ data: Data?) { base.saveMotorcyclePhoto(data) }
     func save(_ ride: Ride) { base.save(ride) }
     func save(_ settings: BreakReminderSettings) { base.save(settings) }
+
+    func eraseAll() {
+        base.eraseAll()
+        refreshWidget()
+    }
 }

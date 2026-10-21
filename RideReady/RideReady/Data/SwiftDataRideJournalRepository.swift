@@ -79,4 +79,14 @@ final class SwiftDataRideJournalRepository: RideJournalRepository {
         record.journal = journal
         try context.save()
     }
+
+    func eraseAll() throws {
+        for record in try context.fetch(FetchDescriptor<JournalEntryRecord>()) {
+            context.delete(record)
+        }
+        for record in try context.fetch(FetchDescriptor<RideJournalRecord>()) {
+            context.delete(record)
+        }
+        try context.save()
+    }
 }

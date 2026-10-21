@@ -103,6 +103,17 @@ final class UserDefaultsRideReadyStore: RideReadyStoring {
         encode(settings, forKey: Key.breakReminderSettings)
     }
 
+    func eraseAll() {
+        defaults.removeObject(forKey: Key.motorcycle)
+        defaults.removeObject(forKey: Key.motorcyclePhoto)
+        defaults.removeObject(forKey: Key.inspections)
+        defaults.removeObject(forKey: Key.streak)
+        defaults.removeObject(forKey: Key.rides)
+        defaults.removeObject(forKey: Key.breakReminderSettings)
+        defaults.removeObject(forKey: Key.tracks)
+        defaults.removeObject(forKey: Key.sessions)
+    }
+
     func tracks() -> [Track] {
         decode([Track].self, forKey: Key.tracks) ?? []
     }

@@ -20,7 +20,7 @@ struct RootTabView: View {
                 LapTimerView(store: store, onExit: { router.selectedTab = .bike })
             }
             Tab("Appearance", systemImage: "circle.lefthalf.filled", value: AppTab.appearance) {
-                AppearanceView(settings: appearance)
+                AppearanceView(settings: appearance, store: store, journal: journal)
             }
         }
         .preferredColorScheme(appearance.mode.colorScheme)

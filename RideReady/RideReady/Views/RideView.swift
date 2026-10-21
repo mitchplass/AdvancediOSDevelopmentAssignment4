@@ -66,18 +66,14 @@ struct RideView: View {
         case .ready:
             bikeCheckCard
             breakReminderCard
-            if viewModel.remindersBlocked {
-                notificationsOffCard
-            }
+            notificationNoticeCard
             recentRidesSection
         case .riding:
             TimelineView(.periodic(from: .now, by: 1)) { context in
                 let snapshot = viewModel.ridingSnapshot(at: context.date)
                 VStack(alignment: .leading, spacing: 16) {
                     ridingCard(snapshot)
-                    if viewModel.remindersBlocked {
-                        notificationsOffCard
-                    }
+                    notificationNoticeCard
                     journalCard
                     infoCard(rows: [
                         ("Started", viewModel.startedText),
@@ -91,6 +87,7 @@ struct RideView: View {
                 let snapshot = viewModel.breakSnapshot(at: context.date)
                 VStack(alignment: .leading, spacing: 16) {
                     breakCard(snapshot)
+                    notificationNoticeCard
                     journalCard
                     infoCard(rows: [
                         ("Started", viewModel.startedText),
@@ -174,24 +171,56 @@ struct RideView: View {
         .background(Color(uiColor: .secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 16))
     }
 
-    private var notificationsOffCard: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Label("Notifications are off", systemImage: "bell.slash")
-                .font(.headline)
-            Text("Break reminders can't reach you until you turn on notifications for RideReady in Settings.")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-            Button("Open Settings") {
+    @ViewBuilder
+    private var notificationNoticeCard: some View {
+        switch viewModel.notificationNotice {
+        case .needsPermission:
+            noticeCard(
+                title: "Break reminders need notifications",
+                systemImage: "bell",
+                message: "RideReady can remind you to stop before a long stint. The reminder stays on this iPhone, and the ride timer still works if you say no.",
+                button: "Allow notifications"
+            ) {
+                Task { await viewModel.allowNotifications() }
+            }
+        case .turnedOff:
+            noticeCard(
+                title: "Notifications are off",
+                systemImage: "bell.slash",
+                message: "Break reminders can't reach you until you turn on notifications for RideReady in Settings.",
+                button: "Open Settings"
+            ) {
                 if let url = URL(string: UIApplication.openNotificationSettingsURLString) {
                     openURL(url)
                 }
             }
-            .font(.subheadline.weight(.semibold))
-            .frame(minHeight: 44)
+        case nil:
+            EmptyView()
+        }
+    }
+
+    private func noticeCard(
+        title: String,
+        systemImage: String,
+        message: String,
+        button: String,
+        action: @escaping () -> Void
+    ) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Label(title, systemImage: systemImage)
+                .font(.headline)
+            Text(message)
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+            Button(button, action: action)
+                .font(.subheadline.weight(.semibold))
+                .frame(minHeight: 44)
         }
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Color(uiColor: .secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 16))
+        .accessibilityElement(children: .contain)
     }
 
     // MARK: - Riding and breaks
@@ -270,6 +299,8 @@ struct RideView: View {
                 Text(value)
                     .font(.system(.largeTitle, design: .rounded).weight(.bold))
                     .monospacedDigit()
+                    .minimumScaleFactor(0.6)
+                    .lineLimit(1)
                 Text(caption)
                     .font(.subheadline)
                     .foregroundStyle(.secondary)

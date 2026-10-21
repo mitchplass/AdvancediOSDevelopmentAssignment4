@@ -108,9 +108,22 @@ final class RideViewModel: ObservableObject {
         bikeCheck.kind == .rideReady
     }
 
-    /// Reminders are on but iOS won't show them.
-    var remindersBlocked: Bool {
-        settings.isEnabled && permission == .denied
+    /// Why break reminders cannot be delivered yet, when the rider has them turned on.
+    enum NotificationNotice: Equatable {
+        case needsPermission
+        case turnedOff
+    }
+
+    var notificationNotice: NotificationNotice? {
+        guard settings.isEnabled else { return nil }
+        switch permission {
+        case .notDetermined:
+            return .needsPermission
+        case .denied:
+            return .turnedOff
+        case .allowed:
+            return nil
+        }
     }
 
     var startedText: String {
@@ -152,18 +165,21 @@ final class RideViewModel: ObservableObject {
         save(updated)
     }
 
-    /// Asks for notification permission the first time reminders are needed,
-    /// then starts the ride and schedules its reminders.
+    /// Starts the ride. Notification permission is requested from the Ride tab's
+    /// explanation, not from this action, so the system prompt is not a surprise.
     func startRide() async {
         riderError = nil
-        if settings.isEnabled, await scheduler.permission() == .notDetermined {
-            do {
-                _ = try await scheduler.requestPermission()
-            } catch {
-                Self.logger.error("Notification permission request failed: \(error.localizedDescription, privacy: .public)")
-            }
-        }
         perform { _ = try startRideUseCase.start() }
+        await refreshReminders()
+    }
+
+    /// Shows the system notification prompt after the in-app explanation.
+    func allowNotifications() async {
+        do {
+            _ = try await scheduler.requestPermission()
+        } catch {
+            Self.logger.error("Notification permission request failed: \(error.localizedDescription, privacy: .public)")
+        }
         await refreshReminders()
     }
 

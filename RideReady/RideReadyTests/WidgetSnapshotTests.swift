@@ -275,4 +275,16 @@ final class WidgetTestStore: RideReadyStoring {
     func saveTracks(_ tracks: [Track]) { savedTracks = tracks }
     func sessions() -> [Session] { savedSessions }
     func saveSessions(_ sessions: [Session]) { savedSessions = sessions }
+    func eraseAll() {
+        bike = nil
+        active = nil
+        completed = nil
+        photo = nil
+        safetyStreak = SafetyStreak(consecutiveDays: 0, lastCompletedOn: nil)
+        ride = nil
+        finishedRides = []
+        settings = .standard
+        savedTracks = []
+        savedSessions = []
+    }
 }

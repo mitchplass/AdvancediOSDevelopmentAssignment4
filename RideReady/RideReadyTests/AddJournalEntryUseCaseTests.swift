@@ -103,4 +103,9 @@ private final class MockRideJournalRepository: RideJournalRepository {
         if fails { throw StorageFailure() }
         saved.append(entry)
     }
+
+    func eraseAll() throws {
+        if fails { throw StorageFailure() }
+        saved.removeAll()
+    }
 }
