@@ -17,6 +17,8 @@ enum AppTab: Hashable {
 final class AppRouter: ObservableObject {
     @Published var selectedTab: AppTab = .bike
     @Published private(set) var rideChangeCount = 0
+    @Published var bikePath: [BikeRoute] = []
+    @Published var widgetError: String?
 
     func rideChangedElsewhere() {
         rideChangeCount += 1
@@ -26,8 +28,8 @@ final class AppRouter: ObservableObject {
 /// Owns the app's store, ride journal, and notification scheduler, registers
 /// notification categories, and handles break reminder actions and taps.
 final class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDelegate {
-    let store: RideReadyStoring
-    let journal: RideJournalRepository
+    let store: WidgetPublishingRideReadyStore
+    let journal: RideJournalRepository  
     let scheduler: NotificationScheduling
     let router = AppRouter()
     let appearance = AppearanceSettings()
@@ -39,17 +41,18 @@ final class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCent
         if store.motorcycle() == nil {
             store.save(.yamahaMT07())
         }
-        self.store = store
+        self.store = WidgetPublishingRideReadyStore(base: store)
+
         do {
             journal = try SwiftDataRideJournalRepository()
         } catch {
             // Keep riding working; this session's journal just isn't saved to disk.
             Self.logger.error("Couldn't open the ride journal: \(error.localizedDescription, privacy: .public)")
-            // An in-memory store has no file to fail on.
             journal = try! SwiftDataRideJournalRepository(inMemory: true)
         }
         scheduler = UserNotificationScheduler()
         super.init()
+        self.store.refreshWidget()
     }
 
     func application(

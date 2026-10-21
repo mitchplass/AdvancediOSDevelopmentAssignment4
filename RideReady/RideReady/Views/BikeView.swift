@@ -7,14 +7,16 @@ enum BikeRoute: Hashable {
 }
 
 struct BikeView: View {
+    @Environment(\.scenePhase) private var scenePhase
     @StateObject private var viewModel: BikeViewModel
-    @State private var path: [BikeRoute] = []
+    @Binding private var path: [BikeRoute]
     @State private var showingError = false
 
     private let store: RideReadyStoring
 
-    init(store: RideReadyStoring) {
+    init(store: RideReadyStoring, path: Binding<[BikeRoute]>) {
         self.store = store
+        _path = path
         _viewModel = StateObject(wrappedValue: BikeViewModel(store: store))
     }
 
@@ -44,6 +46,9 @@ struct BikeView: View {
                 }
             }
             .onAppear { viewModel.reload() }
+            .onChange(of: scenePhase) { _, phase in
+                if phase == .active { viewModel.reload() }
+            }
             .onChange(of: path) { _, newPath in
                 if newPath.isEmpty {
                     viewModel.reload()
@@ -218,9 +223,10 @@ private struct RecentCheckRow: View {
 }
 
 #Preview {
+    @Previewable @State var path: [BikeRoute] = []
     let store = UserDefaultsRideReadyStore()
     if store.motorcycle() == nil {
         store.save(.yamahaMT07())
     }
-    return BikeView(store: store)
+    return BikeView(store: store, path: $path)
 }
