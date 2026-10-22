@@ -17,7 +17,7 @@ struct RootTabView: View {
                 RideView(store: store, journal: journal, scheduler: scheduler, router: router)
             }
             Tab("Lap Timer", systemImage: "stopwatch", value: AppTab.lapTimer) {
-                LapTimerView(store: store, onExit: { router.selectedTab = .bike })
+                LapTimerView(store: store, onShowBike: { router.selectedTab = .bike })
             }
             Tab("Appearance", systemImage: "circle.lefthalf.filled", value: AppTab.appearance) {
                 AppearanceView(settings: appearance, store: store, journal: journal)
