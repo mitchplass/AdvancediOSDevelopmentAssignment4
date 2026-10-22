@@ -1,13 +1,9 @@
-//
-//  AddEditTrackView.swift
-//
-
-
 import SwiftUI
 
 struct AddEditTrackView: View {
-    @EnvironmentObject var dataStore: DataStore
+    @EnvironmentObject private var dataStore: DataStore
     @Environment(\.dismiss) private var dismiss
+    @FocusState private var lengthFocused: Bool
 
     var trackToEdit: Track?
 
@@ -21,52 +17,74 @@ struct AddEditTrackView: View {
         self.trackToEdit = trackToEdit
         _name = State(initialValue: trackToEdit?.name ?? "")
         _location = State(initialValue: trackToEdit?.location ?? "")
-        _lengthText = State(initialValue: trackToEdit?.lengthMeters.map { String(format: "%.0f", $0) } ?? "")
+        _lengthText = State(initialValue: trackToEdit?.lengthMeters.map { String(format: "%g", $0) } ?? "")
         _notes = State(initialValue: trackToEdit?.notes ?? "")
     }
 
-    private var isNameValid: Bool {
-        !name.trimmingCharacters(in: .whitespaces).isEmpty
+    private var isEditing: Bool { trackToEdit != nil }
+
+    private var trimmedName: String {
+        name.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
-    private var isEditing: Bool {
-        trackToEdit != nil
+    private var parsedLength: Double? {
+        let trimmed = lengthText.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return nil }
+        return Double(trimmed)
+    }
+
+    private var lengthIsValid: Bool {
+        let trimmed = lengthText.trimmingCharacters(in: .whitespacesAndNewlines)
+        if trimmed.isEmpty { return true }
+        guard let parsedLength else { return false }
+        return parsedLength > 0
+    }
+
+    private var canSave: Bool {
+        !trimmedName.isEmpty && lengthIsValid
     }
 
     var body: some View {
         NavigationStack {
             Form {
-                Section("Track") {
+                Section {
                     TextField("Name", text: $name)
                     TextField("Location", text: $location)
-                    TextField("Length (metres)", text: $lengthText)
-                        #if os(iOS)
+                    TextField("Length in metres", text: $lengthText)
                         .keyboardType(.decimalPad)
-                        #endif
+                        .focused($lengthFocused)
+                } footer: {
+                    Text(lengthIsValid
+                         ? "Leave the length blank if you don't know it."
+                         : "Enter a length in metres, or leave it blank.")
                 }
 
                 Section("Notes") {
-                    TextEditor(text: $notes)
-                        .frame(minHeight: 80)
+                    TextField("Optional", text: $notes, axis: .vertical)
+                        .lineLimit(3...6)
                 }
             }
-            .scrollContentBackground(.hidden)
-            .background(Color.screenBackground.ignoresSafeArea())
-            .navigationTitle(isEditing ? "Edit Track" : "Register Track")
+            .scrollDismissesKeyboard(.interactively)
+            .navigationTitle(isEditing ? "Edit track" : "Add track")
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") { dismiss() }
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button(isEditing ? "Save" : "Register") { save() }
-                        .disabled(!isNameValid)
+                    Button(isEditing ? "Save" : "Add") { save() }
+                        .disabled(!canSave)
+                }
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer()
+                    Button("Done") { lengthFocused = false }
                 }
             }
             .alert(
-                "Can't Register Track",
+                "Couldn't save this track",
                 isPresented: Binding(
                     get: { errorMessage != nil },
-                    set: { isPresented in if !isPresented { errorMessage = nil } }
+                    set: { if !$0 { errorMessage = nil } }
                 )
             ) {
                 Button("OK", role: .cancel) { errorMessage = nil }
@@ -77,19 +95,32 @@ struct AddEditTrackView: View {
     }
 
     private func save() {
-        let length = Double(lengthText)
+        guard canSave else { return }
+        let location = location.trimmingCharacters(in: .whitespacesAndNewlines)
+        let notes = notes.trimmingCharacters(in: .whitespacesAndNewlines)
 
         if let existing = trackToEdit {
+            if dataStore.tracks.contains(where: {
+                $0.id != existing.id && $0.name.caseInsensitiveCompare(trimmedName) == .orderedSame
+            }) {
+                errorMessage = "You already have a track named \"\(trimmedName)\". Use that one, or choose a different name."
+                return
+            }
             var updated = existing
-            updated.name = name
+            updated.name = trimmedName
             updated.location = location
-            updated.lengthMeters = length
+            updated.lengthMeters = parsedLength
             updated.notes = notes
             dataStore.updateTrack(updated)
             dismiss()
         } else {
             do {
-                try dataStore.registerTrack(name: name, location: location, lengthMeters: length, notes: notes)
+                try dataStore.registerTrack(
+                    name: trimmedName,
+                    location: location,
+                    lengthMeters: parsedLength,
+                    notes: notes
+                )
                 dismiss()
             } catch {
                 errorMessage = error.localizedDescription

@@ -1,81 +1,92 @@
-//
-//  TracksView.swift
-//
-
 import SwiftUI
 
 struct TracksView: View {
-    @EnvironmentObject var dataStore: DataStore
-    @State private var showingRegisterTrack = false
+    @EnvironmentObject private var dataStore: DataStore
+    @State private var showingAddTrack = false
+    @State private var trackPendingDelete: Track?
 
     var body: some View {
-        NavigationStack {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 20) {
-                    header
-
-                    if dataStore.tracks.isEmpty {
-                        EmptyStateView(
-                            title: "No Tracks",
-                            systemImage: "flag.checkered",
-                            message: "Register a circuit to start logging sessions there."
-                        )
-                    } else {
-                        VStack(spacing: 10) {
-                            ForEach(dataStore.tracks) { track in
-                                NavigationLink(value: track) {
-                                    TrackRow(track: track)
+        ScrollView {
+            VStack(alignment: .leading, spacing: 16) {
+                if dataStore.tracks.isEmpty {
+                    emptyState
+                } else {
+                    VStack(spacing: 0) {
+                        ForEach(dataStore.tracks) { track in
+                            NavigationLink(value: track) {
+                                TrackRow(track: track)
+                            }
+                            .buttonStyle(.plain)
+                            .contextMenu {
+                                Button("Delete track", role: .destructive) {
+                                    trackPendingDelete = track
                                 }
-                                .buttonStyle(.plain)
-                                .contextMenu {
-                                    Button(role: .destructive) {
-                                        dataStore.deleteTrack(track)
-                                    } label: {
-                                        Label("Delete", systemImage: "trash")
-                                    }
-                                }
+                            }
+                            if track.id != dataStore.tracks.last?.id {
+                                Divider()
+                                    .padding(.leading)
                             }
                         }
                     }
+                    .groupedCard()
                 }
-                .padding(.horizontal, 20)
-                .padding(.top, 12)
-                .padding(.bottom, 24)
             }
-            .background(Color.screenBackground.ignoresSafeArea())
-            .navigationDestination(for: Track.self) { track in
-                TrackDetailView(track: track)
+            .padding(.horizontal, 20)
+            .padding(.bottom, 20)
+        }
+        .background(Color(uiColor: .systemGroupedBackground))
+        .navigationTitle("Tracks")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .primaryAction) {
+                Button {
+                    showingAddTrack = true
+                } label: {
+                    Image(systemName: "plus")
+                }
+                .accessibilityLabel("Add track")
             }
-            .toolbar(.hidden, for: .navigationBar)
-            .sheet(isPresented: $showingRegisterTrack) {
-                AddEditTrackView()
+        }
+        .sheet(isPresented: $showingAddTrack) {
+            AddEditTrackView()
+                .environmentObject(dataStore)
+        }
+        .confirmationDialog(
+            "Delete this track?",
+            isPresented: Binding(
+                get: { trackPendingDelete != nil },
+                set: { if !$0 { trackPendingDelete = nil } }
+            ),
+            titleVisibility: .visible,
+            presenting: trackPendingDelete
+        ) { track in
+            Button("Delete track", role: .destructive) {
+                dataStore.deleteTrack(track)
             }
+        } message: { _ in
+            Text("Sessions you've already saved stay in your lap history.")
         }
     }
 
-    private var header: some View {
-        HStack {
-            ExitLapTimerButton()
-            Text("Tracks")
-                .font(.system(size: 28, weight: .heavy))
-                .foregroundStyle(Color.primary)
-            Spacer()
-            Button {
-                showingRegisterTrack = true
-            } label: {
-                Image(systemName: "plus")
-                    .font(.system(size: 16, weight: .bold))
-                    .foregroundStyle(.white)
-                    .frame(width: 36, height: 36)
-                    .background(Circle().fill(Color.accentColor))
+    private var emptyState: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text("Add a track before you time a session there.")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+            Button("Add a track") {
+                showingAddTrack = true
             }
-            .accessibilityLabel("Register Track")
+            .font(.subheadline.weight(.semibold))
+            .frame(minHeight: 44)
         }
+        .padding()
+        .groupedCard()
     }
 }
 
 private struct TrackRow: View {
-    @EnvironmentObject var dataStore: DataStore
+    @EnvironmentObject private var dataStore: DataStore
     let track: Track
 
     private var personalBest: Lap? {
@@ -83,42 +94,51 @@ private struct TrackRow: View {
     }
 
     var body: some View {
-        HStack(spacing: 14) {
-            Image(systemName: "flag.checkered")
-                .font(.system(size: 18, weight: .semibold))
-                .foregroundStyle(Color.accentColor)
-                .frame(width: 44, height: 44)
-                .background(Circle().fill(Color.cardFillElevated))
-
-            VStack(alignment: .leading, spacing: 3) {
+        HStack(spacing: 8) {
+            VStack(alignment: .leading, spacing: 2) {
                 Text(track.name)
-                    .font(.system(size: 15, weight: .semibold))
-                    .foregroundStyle(Color.primary)
-                if !track.location.isEmpty {
-                    Text(track.location)
-                        .font(.system(size: 12))
-                        .foregroundStyle(Color.secondary)
+                    .font(.subheadline)
+                    .foregroundStyle(.primary)
+                    .lineLimit(2)
+                if let subtitle {
+                    Text(subtitle)
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(2)
                 }
             }
-
-            Spacer()
-
+            Spacer(minLength: 8)
             if let personalBest {
                 Text(personalBest.time.formattedTime)
-                    .font(.system(size: 14, weight: .bold, design: .rounded))
+                    .font(.subheadline.weight(.semibold))
+                    .monospacedDigit()
                     .foregroundStyle(Color.accentColor)
-            } else {
-                Image(systemName: "chevron.right")
-                    .font(.system(size: 12, weight: .semibold))
-                    .foregroundStyle(Color.secondary)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.7)
             }
+            Image(systemName: "chevron.right")
+                .font(.footnote.weight(.semibold))
+                .foregroundStyle(.tertiary)
+                .accessibilityHidden(true)
         }
-        .padding(14)
-        .cardStyle()
+        .padding(.horizontal)
+        .padding(.vertical, 10)
+        .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
+        .contentShape(Rectangle())
+        .accessibilityElement(children: .combine)
+        .accessibilityHint("Shows this track")
+    }
+
+    private var subtitle: String? {
+        if !track.location.isEmpty { return track.location }
+        if personalBest == nil { return "No laps yet" }
+        return nil
     }
 }
 
 #Preview {
-    TracksView()
-        .environmentObject(DataStore(rideReadyStore: UserDefaultsRideReadyStore()))
+    NavigationStack {
+        TracksView()
+    }
+    .environmentObject(DataStore(rideReadyStore: UserDefaultsRideReadyStore()))
 }
