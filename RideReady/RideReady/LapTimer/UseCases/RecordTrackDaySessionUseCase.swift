@@ -97,15 +97,15 @@ enum TrackDaySessionError: LocalizedError, Equatable {
     var errorDescription: String? {
         switch self {
         case .vehicleNotRegistered:
-            return "That vehicle isn't in your garage yet. Add it under Vehicles before logging a session with it."
+            return "Set up your bike in the Bike tab before timing a session."
         case .trackNotRegistered:
-            return "That track isn't in your list yet. Add it under Tracks before logging a session there."
+            return "Add this track before timing a session there."
         case .sessionDateInFuture:
-            return "The session date is in the future. Log this session once you've actually been on track."
+            return "Pick a date that isn't in the future."
         case .noLapsRecorded:
-            return "Add at least one lap time before saving — a session needs performance data to be worth logging."
-        case .invalidLapTime(let lapNumber, let seconds):
-            return "Lap \(lapNumber)'s time (\(seconds)s) isn't valid. Lap times must be greater than zero."
+            return "Add at least one lap before saving."
+        case .invalidLapTime(let lapNumber, _):
+            return "Lap \(lapNumber) needs a time greater than zero."
         }
     }
 }

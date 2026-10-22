@@ -28,17 +28,6 @@ extension TimeInterval: TimeFormattable {
 }
 
 extension TimeInterval {
-    /// Splits a lap time into minutes / seconds / milliseconds, for display as separate stat boxes (see `StatBoxView`) the same way a countdown timer shows days / hours / minutes / seconds.
-    var lapTimeComponents: (minutes: Int, seconds: Int, milliseconds: Int) {
-        let totalMilliseconds = Int((self * 1000).rounded())
-        let minutes = totalMilliseconds / 60_000
-        let seconds = (totalMilliseconds / 1000) % 60
-        let milliseconds = totalMilliseconds % 1000
-        return (minutes, seconds, milliseconds)
-    }
-}
-
-extension TimeInterval {
     /// Parses a lap time typed by the user. Accepts either "mm:ss.SSS" (e.g. "1:23.456") or a plain number of seconds (e.g. "83.456").
 
     init?(fromLapString string: String) {
